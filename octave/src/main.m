@@ -1,62 +1,40 @@
 function [ind v] = simplex (A, b, c, m, n, x)
-endfunction
+    printf("SIMPLEX: Fase 2\n----------------------------------------\n\n")
 
-function [ind v] = naiveStep(A, m, c, bind, xB)
-    B = A(:, bind)
-    [L, U] = lu(B)
+    v = x
 
-    [redcj, j] = reducedCost(A, c, bind, L, U)
-    if j == 0
-        ind = 0
-        v = xB
-        return
-    endif
+    # Boolean vector, indicating if an index is basic or not
+    indexes = (v ~= 0)
+    # Find basic and non-basic indexes
+    bind  = find(indexes)
+    nbind = find(~indexes)
 
-    y = L \ A(j)
-    dB = - (U \ y)
-
-    if dB >= 0
-        v = dB
-        ind = -1
-        return
-    endif
-
-    [theta, i] = thetaStep(xB, dB, m)
-
-    bind(i) = j
-    v = xB + theta*dB
     ind = 1
-endfunction
+    simplexstep = 0
+    while ind == 1
+        # Print stuff
+        printf("Iterando %d\n", step)
+        print_basics(bind, v)
+        printf("\nValor Função Objetivo: %f\n", c'*v)
 
-function [theta imin] = thetaStep(xB, dB, m)
-    theta = Inf
-    for i=1:m
-        if dB(i) < 0
-            aux = - xB(i) / dB(i)
-            if aux < theta
-                theta = aux
-                imin = i
-            endif
-        endif
+        # Simplex iteration
+        [ind vec] = naiveStep(A, m, c, bind, v(bind))
+        v(bind) = vec
+        v(nbind) = 0
+
+        simplexstep++;
+    endwhile
+
+    if ind == 0
+        printf("Solução ótima encontrada com custo %f\n", c'*v)
+    else
+        printf("Direção associada ao custo -Inf\n")
+    endif
+
+    for i=1:n
+        printf("%d  %f\n", i, v(i))
     endfor
 endfunction
 
-function [redcj ind] = reducedCost(A, c, bind, L, U)
-    cB = c(bind)
-    for j=1:m
-        if any(j == bind)
-            continue;
-        endif
-
-        y = U' \ cB
-        p = L' \ y
-
-        redcj = c(j) - p'*A(:,j)
-        if redcj < 0
-            ind = j
-            return
-        endif
-    endfor
-
-    ind = 0
-endfunction
+    % if ind == 0
+    %
