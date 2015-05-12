@@ -1,6 +1,6 @@
 function print_bind(bind, x)
     # Print "basic elements" of a vector
-    for i=bind
-        printf("%d  %f\n", i, x(i));
+    for i = 1:length(bind)
+        printf("%d  %f\n", bind(i), x(bind(i)));
     endfor
 endfunction

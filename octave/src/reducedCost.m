@@ -1,9 +1,9 @@
 function [redc ind] = reducedCost(A, c, bind, nbind, L, U)
-    # p' = cB' * inv(B)
+    % p = (c(bind)' * inv(A(bind)))'
     p = L' \ (U' \ c(bind));
 
     # Calculate the reduced costs
-    redc = c(nbind) - p'*A(:, nbind);
+    redc = c(nbind)' - p'*A(:, nbind);
 
     # Find the negative costs, if any
     negs = find(redc < 0);

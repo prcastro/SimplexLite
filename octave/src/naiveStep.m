@@ -10,6 +10,7 @@ function [ind vec] = naiveStep(A, m, c, bind, nbind, xB)
     print_vec(nbind, redc);
 
     # When aux = 0, reduced costs are all non-negative
+    # and we found an optimal solution
     if aux == 0
         ind = 0;
         vec = xB;
@@ -20,7 +21,7 @@ function [ind vec] = naiveStep(A, m, c, bind, nbind, xB)
     j = nbind(aux);
 
     # Find j-th basic direction
-    dB = - (U \ (L \ A(j)));
+    dB = - (U \ (L \ A(:, j)));
 
     # If non-negative, this direction leads to cost = -Inf
     if dB >= 0
@@ -40,7 +41,7 @@ function [ind vec] = naiveStep(A, m, c, bind, nbind, xB)
     # Convert bind index to R^n index
     i = bind(aux);
 
-    printf("Theta*\n%f\n", theta);
+    printf("\nTheta*\n%f\n", theta);
     printf("\nSai da base: %d\n", i);
 
     # Swap indexes

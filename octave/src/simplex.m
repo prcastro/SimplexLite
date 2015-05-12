@@ -1,5 +1,5 @@
 function [ind v] = simplex (A, b, c, m, n, x)
-    printf("SIMPLEX: Fase 2\n----------------------------------------\n\n");
+    printf("SIMPLEX: Fase 2\n");
 
     v = x;
 
@@ -13,7 +13,8 @@ function [ind v] = simplex (A, b, c, m, n, x)
     simplexstep = 0;
     while ind == 1;
         # Print stuff
-        printf("Iterando %d\n", simplexstep);
+        printf("\n----------------------------------------\n")
+        printf("\nIterando %d\n", simplexstep);
         print_bind(bind, v);
         printf("\nValor Função Objetivo: %f\n", c'*v);
 
