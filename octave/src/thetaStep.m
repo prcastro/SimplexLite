@@ -1,4 +1,6 @@
 function [theta imin] = thetaStep(xB, dB, m)
+    % Computes the largest step we can do
+    % without leaving the polyhedra
     theta = Inf;
     for i=1:m
         if dB(i) < 0
