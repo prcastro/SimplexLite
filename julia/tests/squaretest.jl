@@ -1,0 +1,6 @@
+include("../src/main.jl")
+A = [1 0 1 0; 0 1 0 1]
+b = [3;2]
+c = [-1;-1;0;0]
+x = [0;0;3;2]
+ind, v = simplex(A,b,c,2,4,x)
