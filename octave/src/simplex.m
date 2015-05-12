@@ -1,5 +1,6 @@
 function [ind v] = simplex (A, b, c, m, n, x)
-    printf("SIMPLEX: Fase 2\n");
+    printf("\n----------------------------------------\n")
+    printf("SIMPLEX: Fase 2");
 
     % Vector starts with initial VBS
     v = x;
@@ -38,6 +39,6 @@ function [ind v] = simplex (A, b, c, m, n, x)
     endif
 
     for i=1:n
-        printf("%d  %f\n", i, v(i));
+        printf("%d  %f\n\n", i, v(i));
     endfor
 endfunction
