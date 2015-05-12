@@ -19,9 +19,20 @@ function [ind v] = simplex (A, b, c, m, n, x)
         printf("\nValor Função Objetivo: %f\n", c'*v);
 
         # Simplex iteration
-        [ind vec] = naiveStep(A, m, c, bind, nbind, v(bind));
-        v(bind) = vec;
-        v(nbind) = 0;
+        [vec ind out in theta] = naiveStep(A, m, c, bind, nbind, v(bind));
+
+        # This is boring.
+        # We should compute d (both its basic and non-basic components)
+        # and then add Theta*d to x
+        # Also, beware when vec is a direction (cost = -Inf)
+        if ind == 1
+            v(bind) = vec;
+            v(nbind) = 0;
+            v(in)    = theta;
+
+            bind(find(bind == out)) = in;
+            nbind(find(nbind == in)) = out;
+        endif
 
         simplexstep++;
     endwhile

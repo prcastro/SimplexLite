@@ -1,4 +1,4 @@
-function [ind vec] = naiveStep(A, m, c, bind, nbind, xB)
+function [vec ind i j theta] = naiveStep(A, m, c, bind, nbind, xB)
     B = A(:, bind);
     [L, U] = lu(B);
 
@@ -12,8 +12,10 @@ function [ind vec] = naiveStep(A, m, c, bind, nbind, xB)
     # When aux = 0, reduced costs are all non-negative
     # and we found an optimal solution
     if aux == 0
-        ind = 0;
         vec = xB;
+        ind = 0;
+        i = 0
+        j = 0
         return;
     endif
 
@@ -27,6 +29,8 @@ function [ind vec] = naiveStep(A, m, c, bind, nbind, xB)
     if dB >= 0
         vec = dB;
         ind = -1;
+        i = 0
+        j = 0
         return;
     endif
 
@@ -43,10 +47,6 @@ function [ind vec] = naiveStep(A, m, c, bind, nbind, xB)
 
     printf("\nTheta*\n%f\n", theta);
     printf("\nSai da base: %d\n", i);
-
-    # Swap indexes
-    bind(find(bind == i))   = j;
-    nbind(find(nbind == j)) = i;
 
     # Compute new vector
     vec = xB + theta*dB;
