@@ -1,57 +1,151 @@
-function simplex(A, b, c, m, n, x)
-    println("Simplex Fase 2")
+function simplex!(A, x, b, c)
+    println("SIMPLEX: Fase 2")
+    println("\n========================================")
 
-    v = x
-    indexes = (v .!= 0)
-    bind = find(indexes)
-    nbind = find(!indexes)
+    # Get A size
+    m, n = size(A)
 
-    ind = 1
-    it = 0
+    # Find basic and non-basic indexes
+    bind  = find(x .!= 0)
+    nbind = find(x .== 0)
+
+    ind         = 1
+    simplexstep = 0
     while ind == 1
-        println("Iterando ", it)
-        print_bind(bind, v)
-        println("Valor Função Objetivo: ", c'v)
+        # Print iteration, basic variables and cost function
+        println("\nIterando ", simplexstep)
+        println("----------------------------------------")
+        print_bind(bind, x)
+        println("\nValor Função Objetivo: ", dot(c, x))
 
-        ind, vec = naiveStep!(A, m, c, bind, nbind, v(bind))
-        v(bind) = vec
-        v(nbind) = 0
+        # println("x:")
+        # println(x)
 
-        it += 1
+        # Simplex iteration
+        ind = naiveStep!(A, c, bind, nbind, x)
+
+        # Next step
+        simplexstep += 1
+        if simplexstep == 5
+            return
+        end
     end
 
+    # Print corresponding solution/direction
+    println("\n========================================")
     if ind == 0
-        println("Solução ótima encontrada com custo", c'v)
+        println("\nSolução ótima encontrada com custo ", dot(c, x))
     else
-        printf("Direção associada ao custo -Inf")
+        println("\nDireção associada ao custo -Inf")
     end
 
-    for i in 1:n
-        @printf("%d  %f\n", i, v(i))
+    for i=1:n
+        println(i, " ", x[i])
     end
 end
 
+function naiveStep!(A, c, bind, nbind, x)
+    # Compute B and its LU decomposition
+    B    = A[:, bind]
+    L, U = lu(B)[1:2]
 
-function simplex_step(A, m, c, bind, nbind, xb)
-    B = A[:, bind]
-    LU = lufact(B)
-    L, U = LU[:L], LU[:U]
+    # Compute the reduced costs
+    redc, idx = reducedCost(A, c, bind, nbind, L, U)
+    println("Custos Reduzidos")
+    print_vec(nbind, redc)
 
+    # When idx = 0, reduced costs are all non-negative
+    # and we found an optimal solution
+    idx == 0 && return 0
 
-    redc, aux =
-    print_redcosts(redc)
+    # Convert nbind index to R^n index
+    j = nbind[idx]
 
-    if min(redc) >= 0
-        return
+    # Find j-th basic direction
+    d       = zeros(size(A, 2))
+    d[bind] = -(U \ (L \ A[:, j]))
+    d[j]    = 1
+
+    # If non-negative, this direction leads to cost = -Inf
+    if all(d .>= 0)
+        # We return x as the direction that leads to cost = -Inf
+        x[:] = d[:]
+        return -1
     end
 
-    db = - U * inv(L * inv(A))
+    # Index j is the one that enters the base
+    println("\nEntra na base:", j)
 
-    if db .>= 0
-        return
+    # Print the direction
+    println("\nDireção:")
+    print_bind(bind, d)
+
+    # Compute Θ*
+    theta, idx = thetaStep(x[bind], d[bind], length(bind))
+    println("\nΘ*: ", theta)
+
+    # Convert bind index to R^n index
+    # This index exits the base
+    i = bind[idx]
+    println("\nSai da base:", i)
+
+    # Compute new vector
+    x[:] += theta*d
+
+    # Update basic and non-basic indexes
+    bind[find(bind .== i)]   = j
+    nbind[find(nbind .== j)] = i
+    println("\n----------------------------------------")
+
+    println(x)
+    return 1
+end
+
+function reducedCost(A, c, bind, nbind, L, U)
+    # Calculate the reduced costs in a vectorized way
+    p = L' \ (U' \ c[bind]) # p = (c(bind)' * inv(A(bind)))'
+    redc = c[nbind]' - p'*A[:, nbind]
+
+    # Find the negative costs, if any
+    negs = find(redc .< 0)
+
+    # If no negative costs are found, return ind = 0
+    if length(negs) == 0
+        return redc, 0
     end
 
-    theta, i = thetaStep(xB, dB, m)
+    # Return the first negative cost
+    return redc, negs[1]
+end
 
-    return
+function thetaStep(xB, dB, m)
+    # Computes the largest step we can do
+    # without leaving the polyhedra
+    theta = Inf
+    imin  = 0
+    for i=1:m
+        if dB[i] < 0
+            aux = - xB[i] / dB[i]
+            if aux < theta
+                theta = aux
+                imin = i
+            end
+        end
+    end
+
+    return theta, imin
+end
+
+function print_vec(indexes, v)
+    # Print a vector and correspondent indexes
+    for i=1:length(v)
+        println(indexes[i], " ", v[i])
+    end
+end
+
+function print_bind(bind, x)
+    # Print "basic elements" of a vector
+    for i = 1:length(bind)
+        println(bind[i], " ", x[bind[i]])
+    end
 end
