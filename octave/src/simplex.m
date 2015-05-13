@@ -1,6 +1,6 @@
 function [ind v] = simplex (A, b, c, m, n, x)
-    printf("\n----------------------------------------\n")
     printf("SIMPLEX: Fase 2");
+    printf("\n========================================\n")
 
     % Vector starts with initial VBS
     v = x;
@@ -13,8 +13,8 @@ function [ind v] = simplex (A, b, c, m, n, x)
     simplexstep = 0;
     while ind == 1;
         % Print iteration, basic variables and cost function
-        printf("\n----------------------------------------\n")
         printf("\nIterando %d\n", simplexstep);
+        printf("----------------------------------------\n")
         print_bind(bind, v);
         printf("\nValor Função Objetivo: %f\n", c'*v);
 
@@ -25,6 +25,7 @@ function [ind v] = simplex (A, b, c, m, n, x)
         if ind == 1
             bind(find(bind == out)) = in;
             nbind(find(nbind == in)) = out;
+            printf("\n----------------------------------------")
         endif
 
         % Next step
@@ -32,13 +33,14 @@ function [ind v] = simplex (A, b, c, m, n, x)
     endwhile
 
     % Print corresponding solution/direction
+    printf("\n========================================\n")
     if ind == 0
-        printf("Solução ótima encontrada com custo %f\n", c'*v);
+        printf("\nSolução ótima encontrada com custo %f\n", c'*v);
     else
-        printf("Direção associada ao custo -Inf\n");
+        printf("\nDireção associada ao custo -Inf\n");
     endif
 
     for i=1:n
-        printf("%d  %f\n\n", i, v(i));
+        printf("%d  %f\n", i, v(i));
     endfor
 endfunction

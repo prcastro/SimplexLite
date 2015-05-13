@@ -43,7 +43,7 @@ function [v ind i j] = naiveStep(A, m, n, c, bind, nbind, v)
     print_bind(bind, d);
 
     % Compute Theta*
-    [theta, idx] = thetaStep(v(bind), d(bind), m);
+    [theta, idx] = thetaStep(v(bind), d(bind), length(bind));
     printf("\nTheta*\n%f\n", theta);
 
     % Convert bind index to R^n index
