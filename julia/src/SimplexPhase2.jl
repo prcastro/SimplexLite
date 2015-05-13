@@ -1,4 +1,11 @@
-function simplex!(A, x, b, c)
+module SimplexPhase2
+
+export simplex!
+
+function simplex!(A::Array{Float64, 2},
+                  x::Array{Float64, 1},
+                  b::Array{Float64, 1},
+                  c::Array{Float64, 1})
     println("SIMPLEX: Fase 2")
     println("\n========================================")
 
@@ -6,33 +13,28 @@ function simplex!(A, x, b, c)
     m, n = size(A)
 
     # Find basic and non-basic indexes
-    bind  = find(x .!= 0)
-    nbind = find(x .== 0)
+    bind  = find(x .!= 0.0)
+    nbind = find(x .== 0.0)
 
     ind         = 1
     simplexstep = 0
-    while ind == 1
+    while ind  == 1
         # Print iteration, basic variables and cost function
         println("\nIterando ", simplexstep)
         println("----------------------------------------")
         print_bind(bind, x)
         println("\nValor Função Objetivo: ", dot(c, x))
 
-        # println("x:")
-        # println(x)
-
         # Simplex iteration
         ind = naiveStep!(A, c, bind, nbind, x)
 
         # Next step
         simplexstep += 1
-        if simplexstep == 5
-            return
-        end
     end
 
-    # Print corresponding solution/direction
     println("\n========================================")
+
+    # Print corresponding solution/direction
     if ind == 0
         println("\nSolução ótima encontrada com custo ", dot(c, x))
     else
@@ -44,7 +46,12 @@ function simplex!(A, x, b, c)
     end
 end
 
-function naiveStep!(A, c, bind, nbind, x)
+function naiveStep!(A::Array{Float64, 2},
+                    c::Array{Float64, 1},
+                    bind::Array{Int, 1},
+                    nbind::Array{Int, 1},
+                    x::Array{Float64, 1})
+
     # Compute B and its LU decomposition
     B    = A[:, bind]
     L, U = lu(B)[1:2]
@@ -64,7 +71,7 @@ function naiveStep!(A, c, bind, nbind, x)
     # Find j-th basic direction
     d       = zeros(size(A, 2))
     d[bind] = -(U \ (L \ A[:, j]))
-    d[j]    = 1
+    d[j]    = 1.0
 
     # If non-negative, this direction leads to cost = -Inf
     if all(d .>= 0)
@@ -81,7 +88,7 @@ function naiveStep!(A, c, bind, nbind, x)
     print_bind(bind, d)
 
     # Compute Θ*
-    theta, idx = thetaStep(x[bind], d[bind], length(bind))
+    theta, idx = findmin(-x[bind] ./ d[bind])
     println("\nΘ*: ", theta)
 
     # Convert bind index to R^n index
@@ -97,55 +104,39 @@ function naiveStep!(A, c, bind, nbind, x)
     nbind[find(nbind .== j)] = i
     println("\n----------------------------------------")
 
-    println(x)
     return 1
 end
 
-function reducedCost(A, c, bind, nbind, L, U)
+function reducedCost(A::Array{Float64, 2},
+                     c::Array{Float64, 1},
+                     bind::Array{Int, 1},
+                     nbind::Array{Int, 1},
+                     L::Array{Float64, 2},
+                     U::Array{Float64, 2})
+
     # Calculate the reduced costs in a vectorized way
-    p = L' \ (U' \ c[bind]) # p = (c(bind)' * inv(A(bind)))'
-    redc = c[nbind]' - p'*A[:, nbind]
+    redc = vec(c[nbind]' - (L' \ (U' \ c[bind]))'*A[:, nbind])
 
     # Find the negative costs, if any
     negs = find(redc .< 0)
 
-    # If no negative costs are found, return ind = 0
-    if length(negs) == 0
-        return redc, 0
-    end
-
-    # Return the first negative cost
-    return redc, negs[1]
+    # If no negative costs are found, return ind = 0,
+    # else, return the first negative cost
+    return redc, (length(negs) == 0 ? 0 : negs[1])
 end
 
-function thetaStep(xB, dB, m)
-    # Computes the largest step we can do
-    # without leaving the polyhedra
-    theta = Inf
-    imin  = 0
-    for i=1:m
-        if dB[i] < 0
-            aux = - xB[i] / dB[i]
-            if aux < theta
-                theta = aux
-                imin = i
-            end
-        end
-    end
-
-    return theta, imin
-end
-
-function print_vec(indexes, v)
+function print_vec(indexes::Array{Int, 1}, v::Array{Float64, 1})
     # Print a vector and correspondent indexes
     for i=1:length(v)
         println(indexes[i], " ", v[i])
     end
 end
 
-function print_bind(bind, x)
+function print_bind(bind::Array{Int, 1}, x::Array{Float64, 1})
     # Print "basic elements" of a vector
     for i = 1:length(bind)
         println(bind[i], " ", x[bind[i]])
     end
+end
+
 end
