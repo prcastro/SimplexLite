@@ -41,9 +41,7 @@ function simplex!(A::Array{Float64, 2},
         println("\nDireção associada ao custo -Inf")
     end
 
-    for i=1:n
-        println(i, " ", x[i])
-    end
+    print_vec(1:n, x)
 end
 
 function naiveStep!(A::Array{Float64, 2},
@@ -125,7 +123,7 @@ function reducedCost(A::Array{Float64, 2},
     return redc, (length(negs) == 0 ? 0 : negs[1])
 end
 
-function print_vec(indexes::Array{Int, 1}, v::Array{Float64, 1})
+function print_vec(indexes, v::Array{Float64, 1})
     # Print a vector and correspondent indexes
     for i=1:length(v)
         println(indexes[i], " ", v[i])
