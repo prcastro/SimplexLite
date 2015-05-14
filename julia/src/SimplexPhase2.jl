@@ -50,9 +50,9 @@ function naiveStep!(A::Array{Float64, 2},
                     nbind::Array{Int, 1},
                     x::Array{Float64, 1})
 
-    # Compute B and its LU decomposition
-    B    = A[:, bind]
-    L, U = lu(B)[1:2]
+    # Compute B's LU decomposition
+    lub = lufact(A[:, bind])
+    L, U = lub[:L], lub[:U]
 
     # Compute the reduced costs
     redc, idx = reducedCost(A, c, bind, nbind, L, U)
