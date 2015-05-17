@@ -6,8 +6,8 @@ function simplex!(A::Array{Float64, 2},
                   x::Array{Float64, 1},
                   b::Array{Float64, 1},
                   c::Array{Float64, 1})
-    println("SIMPLEX: Fase 2")
-    println("\n========================================")
+    println("\nSIMPLEX: Fase 2")
+    println("========================================\n")
 
     # Get A size
     m, n = size(A)
@@ -20,7 +20,7 @@ function simplex!(A::Array{Float64, 2},
     simplexstep = 0
     while ind  == 1
         # Print iteration, basic variables and cost function
-        println("\nIterando ", simplexstep)
+        println("Iterando ", simplexstep)
         println("----------------------------------------")
         print_bind(bind, x)
         println("\nValor Função Objetivo: ", dot(c, x))
