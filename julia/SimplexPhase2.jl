@@ -86,7 +86,7 @@ function naiveStep!(A::Array{Float64, 2},
     print_bind(bind, d)
 
     # Compute Θ*
-    theta, idx = findmin(-x[bind] ./ d[bind])
+    theta, idx = thetaStep(x[bind], d[bind])
     println("\nΘ*: ", theta)
 
     # Convert bind index to R^n index
@@ -121,6 +121,26 @@ function reducedCost(A::Array{Float64, 2},
     # If no negative costs are found, return ind = 0,
     # else, return the first negative cost
     return redc, (length(negs) == 0 ? 0 : negs[1])
+end
+
+function thetaStep(xB::Array{Float64,1},
+                   dB::Array{Float64,1})
+
+    # Computes the largest step we can do
+    # without leaving the polyhedra
+    theta = Inf
+    imin = 0
+    for i in 1:length(xB)
+        if dB[i] < 0
+            aux = - xB[i] / dB[i]
+            if aux < theta
+                theta = aux
+                imin = i
+            end
+        end
+    end
+
+    return theta, imin
 end
 
 function print_vec(indexes, v::Array{Float64, 1})
