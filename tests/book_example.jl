@@ -1,4 +1,4 @@
-include("../src/SimplexPhase2.jl")
+include("../julia/SimplexPhase2.jl")
 using SimplexPhase2
 
 A = [1.0 1.0 2.0 1.0 0.0 0.0 0.0;
