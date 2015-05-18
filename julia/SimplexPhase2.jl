@@ -131,7 +131,7 @@ function thetaStep(xB::Array{Float64,1},
     theta = Inf
     imin = 0
     for i in 1:length(xB)
-        if dB[i] < 0
+         @inbounds if dB[i] < 0
             aux = - xB[i] / dB[i]
             if aux < theta
                 theta = aux
@@ -146,14 +146,14 @@ end
 function print_vec(indexes, v::Array{Float64, 1})
     # Print a vector and correspondent indexes
     for i=1:length(v)
-        println(indexes[i], " ", v[i])
+        @inbounds println(indexes[i], " ", v[i])
     end
 end
 
 function print_bind(bind::Array{Int, 1}, x::Array{Float64, 1})
     # Print "basic elements" of a vector
     for i = 1:length(bind)
-        println(bind[i], " ", x[bind[i]])
+        @inbounds println(bind[i], " ", x[bind[i]])
     end
 end
 
