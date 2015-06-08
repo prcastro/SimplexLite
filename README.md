@@ -1,4 +1,4 @@
-# simplex-phase2
+# SimplexLite
 Implementation of phase 2 of Simplex Algorithm for the MAC315 class
 
 ## Running Modules
