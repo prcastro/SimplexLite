@@ -1,4 +1,4 @@
-function [v ind i j] = naiveStep(A, m, n, c, bind, nbind, v)
+function [v d ind i j] = naiveStep(A, m, n, c, bind, nbind, v)
     % Compute B and its LU decomposition
     B = A(:, bind);
     [L, U] = lu(B);
@@ -11,6 +11,7 @@ function [v ind i j] = naiveStep(A, m, n, c, bind, nbind, v)
     % When idx = 0, reduced costs are all non-negative
     % and we found an optimal solution
     if idx == 0
+        d = zeros(n, 1);
         ind = 0;
         i = 0;
         j = 0;
@@ -27,8 +28,6 @@ function [v ind i j] = naiveStep(A, m, n, c, bind, nbind, v)
 
     % If non-negative, this direction leads to cost = -Inf
     if d >= 0
-        % We return v as the direction that leads to cost = -Inf
-        v = d;
         ind = -1;
         i = 0;
         j = 0;

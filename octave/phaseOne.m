@@ -29,7 +29,7 @@ function [ind x] = phaseOne(A, b, m, n)
         printf("\nValor Função Objetivo: %f\n", c'*v);
 
         % Simplex iteration
-        [v ind out in] = naiveStep(A, m, n, c, bind, nbind, v);
+        [v d ind out in] = naiveStep(A, m, n, c, bind, nbind, v);
 
         % Update basic and non-basic indexes, if necessary
         if ind == 1
@@ -44,8 +44,8 @@ function [ind x] = phaseOne(A, b, m, n)
 
     % if y != 0 the original problem is not feasible
     if v((n-m+1):n) != zeros(m, 1)
-        ind = 1
+        ind = 1;
     endif
 
-    x = v(1:(n-m))
+    x = v(1:(n-m));
 endfunction

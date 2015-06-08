@@ -3,6 +3,6 @@ addpath("../octave")
 A = [1 0 1];
 b = [3];
 c = [0;-1;0];
-x = [0;0;3];
+% x = [0;0;3];
 
-simplex(A,b,c,1,3,x);
+simplex(A,b,c,1,3);

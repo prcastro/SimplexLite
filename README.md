@@ -18,7 +18,7 @@ On Octave:
 addpath("octave")
 
 # Define your model here
-simplex(A,b,c,m,n,x)
+simplex(A,b,c,m,n)
 ```
 
 

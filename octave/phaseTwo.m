@@ -1,5 +1,5 @@
-function [ind v] = phaseTwo(A, b, c, m, n, v)
-    printf("SIMPLEX: Fase 2");
+function [ind v d] = phaseTwo(A, b, c, m, n, v)
+    printf("\n\nSIMPLEX: Fase 2");
     printf("\n========================================\n")
 
     % Find basic and non-basic indexes
@@ -16,7 +16,7 @@ function [ind v] = phaseTwo(A, b, c, m, n, v)
         printf("\nValor Função Objetivo: %f\n", c'*v);
 
         % Simplex iteration
-        [v ind out in] = naiveStep(A, m, n, c, bind, nbind, v);
+        [v d ind out in] = naiveStep(A, m, n, c, bind, nbind, v);
 
         % Update basic and non-basic indexes, if necessary
         if ind == 1
