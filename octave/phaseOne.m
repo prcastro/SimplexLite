@@ -1,19 +1,23 @@
-function [ind v] = simplex (A, b, c, m, n)
-    % separated function implementing Simplex Phase One
-    [feas v] = phaseOne(A, b, m, n);
+function [feas x] = phaseOne(A, b, m, n)
+    % auxiliary problem:
+    % MIN. sum(y_i)
+    % S.T. Ax + y = b
+    %      x, y >= 0
 
-    if feas == 1
-        printf("The original problem isn't feasible")
-        ind = 1
-        return
-    endif
-
-    printf("SIMPLEX: Fase 2");
+    printf("SIMPLEX: Fase 1");
     printf("\n========================================\n")
 
+    % first BFS, x = 0, y = b
+    v = [zeros(n, 1); b];
+
+    % redefining
+    A = [A, eye(m)];
+    c = [zeros(n, 1); ones(m, 1)];
+    n = n+m;
+
     % Find basic and non-basic indexes
-    bind  = find(v ~= 0);
-    nbind = find(v == 0);
+    nbind = [1:(n-m)];
+    bind  = [(n-m+1):n];
 
     ind = 1;
     simplexstep = 0;
@@ -38,15 +42,12 @@ function [ind v] = simplex (A, b, c, m, n)
         simplexstep++;
     endwhile
 
-    % Print corresponding solution/direction
-    printf("\n========================================\n")
-    if ind == 0
-        printf("\nSolução ótima encontrada com custo %f\n", c'*v);
+    % if y = 0 the original problem is feasible
+    if v((n-m+1):n) == zeros(m, 1)
+        feas = 0
     else
-        printf("\nDireção associada ao custo -Inf\n");
+        feas = 1
     endif
 
-    for i=1:n
-        printf("%d  %f\n", i, v(i));
-    endfor
+    x = v(1:(n-m))
 endfunction
