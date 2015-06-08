@@ -1,5 +1,5 @@
 # SimplexLite
-Implementation of phase 2 of Simplex Algorithm for the MAC315 class
+Implementation of the Simplex Algorithm for MAC315 class
 
 ## Running Modules
 On Julia:
