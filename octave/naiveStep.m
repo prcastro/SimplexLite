@@ -4,22 +4,16 @@ function [v d ind i j] = naiveStep(A, m, n, c, bind, nbind, v)
     [L, U] = lu(B);
 
     % Compute the reduced costs
-    [redc, idx] = reducedCost(A, c, bind, nbind, L, U);
-    printf("Custos Reduzidos\n");
-    print_vec(nbind, redc);
+    [redc, j] = reducedCost(A, c, bind, nbind, L, U);
 
-    % When idx = 0, reduced costs are all non-negative
+    % When j = 0, reduced costs are all non-negative
     % and we found an optimal solution
-    if idx == 0
+    if j == 0
         d = zeros(n, 1);
         ind = 0;
         i = 0;
-        j = 0;
         return;
     endif
-
-    % Convert nbind index to R^n index
-    j = nbind(idx);
 
     % Find j-th basic direction
     d       = zeros(n, 1);

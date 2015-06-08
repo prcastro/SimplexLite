@@ -3,8 +3,8 @@ function [ind v d] = phaseTwo(A, b, c, m, n, v)
     printf("\n========================================\n")
 
     % Find basic and non-basic indexes
-    bind  = find(v ~= 0);
-    nbind = find(v == 0);
+    bind  = find(v ~= 0)';
+    nbind = find(v == 0)';
 
     ind = 1;
     simplexstep = 0;

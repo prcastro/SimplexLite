@@ -25,5 +25,4 @@ function [ind v d] = simplex (A, b, c, m, n)
         endfor
     endif
 
-
 endfunction
