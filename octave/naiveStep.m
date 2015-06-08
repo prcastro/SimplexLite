@@ -4,7 +4,7 @@ function [v d ind i j] = naiveStep(A, m, n, c, bind, nbind, v)
     [L, U] = lu(B);
 
     % Compute the reduced costs
-    [redc, j] = reducedCost(A, c, bind, nbind, L, U);
+    [redc, j] = naiveReducedCost(A, c, bind, nbind, L, U);
 
     % When j = 0, reduced costs are all non-negative
     % and we found an optimal solution

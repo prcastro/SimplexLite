@@ -6,6 +6,9 @@ function [ind v d] = phaseTwo(A, b, c, m, n, v)
     bind  = find(v ~= 0)';
     nbind = find(v == 0)';
 
+    % Compute the inverse of the first basic matrix
+    Binv = inv(A(:, bind));
+
     ind = 1;
     simplexstep = 0;
     while ind == 1;
@@ -16,10 +19,11 @@ function [ind v d] = phaseTwo(A, b, c, m, n, v)
         printf("\nValor Função Objetivo: %f\n", c'*v);
 
         % Simplex iteration
-        [v d ind out in] = naiveStep(A, m, n, c, bind, nbind, v);
+        [v d ind out in] = revisedStep(A, Binv, m, n, c, bind, nbind, v);
 
-        % Update basic and non-basic indexes, if necessary
+        % Update basic and non-basic indexes and update the inverse of basic matrix, if necessary
         if ind == 1
+            Binv = updateBinv(Binv, -d', out);
             bind(find(bind == out)) = in;
             nbind(find(nbind == in)) = out;
             printf("\n----------------------------------------")
