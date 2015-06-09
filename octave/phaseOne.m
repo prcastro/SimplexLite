@@ -32,11 +32,12 @@ function [ind x] = phaseOne(A, b, m, n)
         printf("\nValor Função Objetivo: %f\n", c'*v);
 
         % Simplex iteration
-        [v d ind out in] = naiveStep(A, m, n, c, bind, nbind, v);
+        %[v d ind out in] = naiveStep(A, m, n, c, bind, nbind, v);
+        [v d ind out in] = revisedStep(A, Binv, m, n, c, bind, nbind, v);
 
         % Update basic and non-basic indexes and update the inverse of basic matrix, if necessary
         if ind == 1
-            %Binv = updateBinv(Binv, -d', out);
+            Binv = updateBinv(Binv, -d(bind)', find(bind == out));
             bind(find(bind == out)) = in;
             nbind(find(nbind == in)) = out;
             printf("\n----------------------------------------")

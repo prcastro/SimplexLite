@@ -23,7 +23,8 @@ function [ind v d] = phaseTwo(A, b, c, m, n, v)
 
         % Update basic and non-basic indexes and update the inverse of basic matrix, if necessary
         if ind == 1
-            Binv = updateBinv(Binv, -d', out);
+            Binv = updateBinv(Binv, -d(bind)', find(bind == out));
+            %Binv = updateBinv(Binv, -d', out);
             bind(find(bind == out)) = in;
             nbind(find(nbind == in)) = out;
             printf("\n----------------------------------------")
