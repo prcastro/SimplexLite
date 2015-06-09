@@ -19,6 +19,9 @@ function [ind x] = phaseOne(A, b, m, n)
     nbind = [1:(n-m)];
     bind  = [(n-m+1):n];
 
+    % Compute the inverse of the first basic matrix
+    Binv = inv(A(:, bind));
+
     ind = 1;
     simplexstep = 0;
     while ind == 1;
@@ -31,8 +34,9 @@ function [ind x] = phaseOne(A, b, m, n)
         % Simplex iteration
         [v d ind out in] = naiveStep(A, m, n, c, bind, nbind, v);
 
-        % Update basic and non-basic indexes, if necessary
+        % Update basic and non-basic indexes and update the inverse of basic matrix, if necessary
         if ind == 1
+            %Binv = updateBinv(Binv, -d', out);
             bind(find(bind == out)) = in;
             nbind(find(nbind == in)) = out;
             printf("\n----------------------------------------")
