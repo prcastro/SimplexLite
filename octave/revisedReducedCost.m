@@ -2,12 +2,12 @@ function [redc ind] = revisedReducedCost(A, Binv, c, bind, nbind)
     printf("Custos Reduzidos\n");
 
     % Calculate the reduced costs in a vectorized way
-    p = c(bind)'*Binv; % p = (c(bind)' * inv(A(bind)))'
+    p_T = c(bind)'*Binv; % p is a transposed vector here
 
     % Compute reduced costs until find the first negative one
     for i = nbind
         % Compute the reduced cost
-        redc = c(i) - p*A(:, i);
+        redc = c(i) - (p_T)*A(:, i);
 
         % Print the computed reduced cost
         printf("%d  %f\n", i, redc);
