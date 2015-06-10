@@ -23,7 +23,7 @@ function reducedCosts(A::Array{Float64, 2},
     end
 
     # If no negative costs are found, return ind = 0 and redc = 0
-    return 0, 0
+    return 0.0, 0
 end
 
 function theta(xB::Array{Float64,1},
@@ -31,7 +31,7 @@ function theta(xB::Array{Float64,1},
 
     # Computes the largest step we can do
     # without leaving the polyhedra
-    Θ, imin = Inf, 0
+    Θ, imin = Float64(Inf), 0
     for i in 1:length(xB)
          @inbounds if dB[i] < 0
             aux = - xB[i] / dB[i]
