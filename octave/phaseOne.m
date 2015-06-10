@@ -4,7 +4,7 @@ function [ind x] = phaseOne(A, b, m, n)
     % S.T. Ax + y = b
     %      x, y >= 0
 
-    printf("SIMPLEX: Fase 1");
+    printf("SIMPLEX: Phase 1");
     printf("\n========================================\n")
 
     % first BFS, x = 0, y = b
@@ -22,36 +22,8 @@ function [ind x] = phaseOne(A, b, m, n)
     % Compute the inverse of the first basic matrix
     Binv = inv(A(:, bind));
 
-    ind = 1;
-    simplexstep = 0;
-    while ind == 1;
-        % Print iteration, basic variables and cost function
-        printf("\nIterando %d\n", simplexstep);
-        printf("----------------------------------------\n")
-        print_bind(bind, v);
-        printf("\nValor Função Objetivo: %f\n", c'*v);
-
-        % Simplex iteration
-        %[v d ind out in] = naiveStep(A, m, n, c, bind, nbind, v);
-        [v d ind out in] = revisedStep(A, Binv, m, n, c, bind, nbind, v);
-
-        % Update basic and non-basic indexes and update the inverse of basic matrix, if necessary
-        if ind == 1
-            Binv = updateBinv(Binv, -d(bind), find(bind == out));
-            printf("Vetor canonico\n");
-            updateBinv(-d(bind), -d(bind), find(bind == out))
-            bind(find(bind == out)) = in;
-            nbind(find(nbind == in)) = out;
-
-            % This is false:
-            % inv(A(:, bind)) == Binv
-
-            printf("\n----------------------------------------")
-        endif
-
-        % Next step
-        simplexstep++;
-    endwhile % ind = 0, because the aux problem is feasible
+    [ind, v, d] = revisedSimplexCore(A, Binv, m, n, c, bind, nbind, v);
+    % Here ind = 0, since the auxiliary problem is feasible
 
     % if y != 0 the original problem is not feasible
     if v((n-m+1):n) != zeros(m, 1)

@@ -1,5 +1,5 @@
 function [redc ind] = revisedReducedCost(A, Binv, c, bind, nbind)
-    printf("Custos Reduzidos\n");
+    printf("Reduced Costs:\n");
 
     % Calculate the reduced costs in a vectorized way
     p_T = c(bind)'*Binv; % p is a transposed vector here

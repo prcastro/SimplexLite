@@ -11,4 +11,6 @@ function [theta imin] = thetaStep(xB, dB, m)
             endif
         endif
     endfor
+
+    printf("\nTheta*\n%f\n", theta);
 endfunction

@@ -25,20 +25,19 @@ function [v d ind i j] = revisedStep(A, Binv, m, n, c, bind, nbind, v)
     endif
 
     % Index j is the one that enters the base
-    printf("\nEntra na base: %d\n", j);
+    printf("\nEnters the base: %d\n", j);
 
     % Print the direction
-    printf("\nDireção\n");
+    printf("\nDirection\n");
     print_bind(bind, d);
 
     % Compute Theta*
     [theta, idx] = thetaStep(v(bind), d(bind), length(bind));
-    printf("\nTheta*\n%f\n", theta);
 
     % Convert bind index to R^n index
     % This index exits the base
     i = bind(idx);
-    printf("\nSai da base: %d\n", i);
+    printf("\nLeaves the base: %d\n", i);
 
     % Compute new vector
     v += theta*d;
