@@ -45,14 +45,11 @@ function simplexPhase2!(A::Array{Float64, 2}, x::Array{Float64, 1}, b::Array{Flo
     println("========================================\n")
 
     # Find non-basic indexes
-    # nbind  = find(x == 0.0)
-    # # Drop last indexes if we have more than n-m non-basic indexes
-    # length(nbind) > (n-m) && (nbind = nbind[1:n-m])
-    # # Find basic indexes
-    # bind = filter(i -> !(i in nbind), eachindex(x))
-
-    bind  = find(x .!= 0.0)
-    nbind = find(x .== 0.0)
+    nbind  = find(x .== 0.0)
+    # Drop last indexes if we have more than n-m non-basic indexes
+    length(nbind) > (n-m) && (nbind = nbind[1:n-m])
+    # Find basic indexes
+    bind = filter(i -> !(i in nbind), eachindex(x))
 
     # Compute the inverse of the basic matrix
     Binv = inv(A[:, bind])
