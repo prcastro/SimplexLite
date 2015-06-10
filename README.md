@@ -5,8 +5,8 @@ Implementation of the Simplex Algorithm for MAC315 class
 On Julia:
 
 ```julia
-include("julia/SimplexPhase2.jl")
-using SimplexPhase2
+include("julia/SimplexLite.jl")
+using SimplexLite
 
 # Define your model here
 simplex!(A,x,b,c)

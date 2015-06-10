@@ -25,7 +25,7 @@ function [v d ind i j] = revisedStep(A, Binv, m, n, c, bind, nbind, v)
     endif
 
     % Index j is the one that enters the base
-    printf("\nEnters the base: %d\n", j);
+    printf("\nEnters the basis: %d\n", j);
 
     % Print the direction
     printf("\nDirection\n");
@@ -37,7 +37,7 @@ function [v d ind i j] = revisedStep(A, Binv, m, n, c, bind, nbind, v)
     % Convert bind index to R^n index
     % This index exits the base
     i = bind(idx);
-    printf("\nLeaves the base: %d\n", i);
+    printf("\nLeaves the basis: %d\n", i);
 
     % Compute new vector
     v += theta*d;
