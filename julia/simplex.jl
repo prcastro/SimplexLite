@@ -68,7 +68,7 @@ function simplexPhase2!(A::Array{Float64, 2}, x::Array{Float64, 1}, b::Array{Flo
     end
 
     # Sanity check
-    @assert A*x == b "Solution isn't feasible?!"
+    @assert A*x == b "Solution isn't feasible"
 
     return ind, d
 end
