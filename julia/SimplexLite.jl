@@ -48,7 +48,7 @@ function simplex!(A::Array{Float64, 2}, Binv::Array{Float64, 2},
         println("----------------------------------------")
         println("Basic Feasible Solution (Basic Indexes):")
         print_bind(bind, v)
-        println("\nValue of cost function: ", dot(c,v))
+        println("\nValue of cost function: ", c⋅v)
 
         # Simplex iteration
         ind, d = simplexStep!(A, Binv, n, c, bind, nbind, v)

@@ -15,7 +15,7 @@ function reducedCosts(A::Array{Float64, 2},
     # Compute reduced costs until find the first negative one
     for i in nbind
       # Compute the reduced cost
-      redc = c[i] - dot(p_T, A[:, i])
+      redc = c[i] - p_T⋅A[:, i]
       # Print the computed reduced cost
       println(i, " ", redc)
       # Return if negative

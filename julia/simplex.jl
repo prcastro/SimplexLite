@@ -60,7 +60,7 @@ function simplexPhase2!(A::Array{Float64, 2}, x::Array{Float64, 1}, b::Array{Flo
     # Print corresponding solution/direction
     println("\n========================================")
     if ind == 0
-        println("Optimal BFS found with cost: ", dot(c, x))
+        println("Optimal BFS found with cost: ", c⋅x)
         print_vec(1:n, x)
     else
         println("Direction associated with cost -Inf:")
