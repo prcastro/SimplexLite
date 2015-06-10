@@ -1,4 +1,4 @@
-function [redc ind] = reducedCost(A, c, bind, nbind, L, U)
+function [redc ind] = naiveReducedCost(A, c, bind, nbind, L, U)
     printf("Custos Reduzidos\n");
 
     % Calculate the reduced costs in a vectorized way
