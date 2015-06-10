@@ -25,4 +25,8 @@ function [ind v d] = simplex (A, b, c, m, n)
         endfor
     endif
 
+    % Sanity check
+    if A*v != b
+        error("Solution isn't feasible?!")
+    endif
 endfunction

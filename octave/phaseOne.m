@@ -37,9 +37,15 @@ function [ind x] = phaseOne(A, b, m, n)
 
         % Update basic and non-basic indexes and update the inverse of basic matrix, if necessary
         if ind == 1
-            Binv = updateBinv(Binv, -d(bind)', find(bind == out));
+            Binv = updateBinv(Binv, -d(bind), find(bind == out));
+            printf("Vetor canonico\n");
+            updateBinv(-d(bind), -d(bind), find(bind == out))
             bind(find(bind == out)) = in;
             nbind(find(nbind == in)) = out;
+
+            % This is false:
+            % inv(A(:, bind)) == Binv
+
             printf("\n----------------------------------------")
         endif
 
