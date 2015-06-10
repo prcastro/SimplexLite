@@ -8,7 +8,10 @@ On Julia:
 include("julia/SimplexLite.jl")
 using SimplexLite
 
-# Define your model here
+# If you don't have an initial BFS
+simplex(A,b,c)
+
+# If you have an initial BFS (x)
 simplex!(A,x,b,c)
 ```
 
