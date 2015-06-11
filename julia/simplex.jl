@@ -39,7 +39,7 @@ function simplexPhase1(A::Array{Float64, 2}, b::Array{Float64, 1},
     Binv = inv(A[:, bind])
 
     # Find optimal BFS of the auxiliary problem using Simplex Algorithm
-    ind, d = simplex!(A, Binv, m, n, c, bind, nbind, v)
+    ind, d = simplex!(A, Binv, n, c, bind, nbind, v)
 
     # Here ind = 0, since the auxiliary problem is feasible
 
@@ -63,7 +63,6 @@ given an initial Basic Feasible Solution and all other parameters (including dim
 ### Arguments
 * `A`: Restriction matrix [Float64 Array m × n]
 * `x`: Initial Basic Feasible Solution [Float64 Vector n] **modified by the function**
-* `b`: Restriction vector [Float64 Vector m]
 * `c`: Cost vector [Float64 Vector n]
 * `m`: Number of restrictions [Int]
 * `n`: Number of variables (dimensionality of x) [Int]
@@ -72,7 +71,7 @@ given an initial Basic Feasible Solution and all other parameters (including dim
 * `ind`: Indicates 0 if found initial BFS and 1 if the original problem is unfeasible [Int]
 * `d`: Last direction (if optimal solution is found) or the direction leading to cost -Inf [Float64 Vector n]
 """ ->
-function simplexPhase2!(A::Array{Float64, 2}, x::Array{Float64, 1}, b::Array{Float64, 1},
+function simplexPhase2!(A::Array{Float64, 2}, x::Array{Float64, 1},
                         c::Array{Float64, 1}, m::Int, n::Int)
 
     # Find non-basic indexes
@@ -93,7 +92,7 @@ function simplexPhase2!(A::Array{Float64, 2}, x::Array{Float64, 1}, b::Array{Flo
     Binv = inv(A[:, bind])
 
     # Find optimal BFS using Simplex Algorithm
-    ind, d = simplex!(A, Binv, m, n, c, bind, nbind, x)
+    ind, d = simplex!(A, Binv, n, c, bind, nbind, x)
 
     return ind, d
 end
@@ -132,7 +131,7 @@ function simplexStep!(A::Array{Float64, 2},
                       x::Array{Float64, 1})
 
     # Compute the reduced costs
-    redc, j = reducedCosts(A, Binv, c, bind, nbind)
+    redc, nidx, j = reducedCosts(A, Binv, c, bind, nbind)
 
     # When j = 0, reduced costs are all non-negative
     # and we found an optimal solution
@@ -144,24 +143,31 @@ function simplexStep!(A::Array{Float64, 2},
     d[j]    = 1.0
 
     # If non-negative, this direction leads to cost = -Inf
-    all(d .>= 0.0) && return -1, d
+    aux = 0
+    for i in eachindex(d)
+        if d[i] < 0
+            aux = 1
+            break
+        end
+    end
+    aux == 0 && return -1, d
 
     # Index j is the one that enters the base
 
     # Compute Θ*
-    Θ, idx = theta(x[bind], d[bind])
+    Θ, bidx = theta(x[bind], d[bind])
 
     # Convert bind index to R^n index
     # This index exits the base
-    i = bind[idx]
+    i = bind[bidx]
 
     # Compute new vector
     x[:] += Θ*d
 
     # Update basic, non-basic indexes and the inverse of the basic matrix
-    updateBinv!(Binv, -d[bind], idx)
-    bind[findin(bind, i)]   = j
-    nbind[findin(nbind, j)] = i
+    updateBinv!(Binv, -d[bind], bidx)
+    bind[bidx]  = j
+    nbind[nidx] = i
 
     return 1, d
 end

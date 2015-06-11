@@ -33,7 +33,7 @@ function simplex(A::Array{Float64, 2}, b::Array{Float64, 1}, c::Array{Float64, 1
     # Unfeasible problem
     ind == 1 && return ind, x, zeros(n)
 
-    ind, d = simplexPhase2!(A, x, b, c, m, n)
+    ind, d = simplexPhase2!(A, x, c, m, n)
     return ind, x, d
 end
 
@@ -61,13 +61,14 @@ using the Simplex Algorithm, given the restrictions, the cost-vector and a initi
 function simplex!(A::Array{Float64, 2}, x::Array{Float64, 1},
                   b::Array{Float64, 1}, c::Array{Float64, 1})
     m, n = size(A)
-    return simplexPhase2!(A, x, b, c, m, n)
+    @assert A*x == b
+    return simplexPhase2!(A, x, c, m, n)
 end
 
 @doc """
 *simplex!(A::Array{Float64, 2},
           Binv::Array{Float64, 2},
-          m::Int, n::Int,
+          n::Int,
           c::Array{Float64, 1},
           bind::Array{Int, 1},
           nbind::Array{Int, 1},
@@ -85,7 +86,6 @@ and the basic indexes. This function won't print anything on screen nor check it
 ### Arguments
 * `A`: Restriction matrix [Float64 Array m × n]
 * `Binv`: Inverse of the basic matrix [Float64 Array m × n] **modified by the function**
-* `m`: Number of restrictions [Int]
 * `n`: Number of variables (dimensionality of x) [Int]
 * `c`: Cost vector [Float64 Vector n]
 * `bind`: Basic indexes [Int Array m]
@@ -97,7 +97,7 @@ and the basic indexes. This function won't print anything on screen nor check it
 * `d`: Last direction (if optimal solution is found) or the direction leading to cost -Inf [Float64 Vector n]
 """ ->
 function simplex!(A::Array{Float64, 2}, Binv::Array{Float64, 2},
-                  m::Int, n::Int, c::Array{Float64, 1},
+                  n::Int, c::Array{Float64, 1},
                   bind::Array{Int, 1}, nbind::Array{Int, 1},
                   x::Array{Float64, 1})
 
