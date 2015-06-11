@@ -1,10 +1,27 @@
+@doc """
+*simplexPhase1(A::Array{Float64, 2}, b::Array{Float64, 1}, m::Int, n::Int)*
+
+Solves the auxiliary problem:
+
+MINIMIZE    sum(y_i)
+SUBJECT TO  Ax + y  = b
+              x, y >= 0
+
+To find the initial Basic Feasible Solution. If the cost of the auxiliary problem
+is -Inf, the original problem is unfeasible. This is called Phase 1 of Simplex Algorithm.
+
+### Arguments
+* `A`: Restriction matrix [Float64 Array m × n]
+* `b`: Restriction vector [Float64 Vector m]
+* `m`: Number of restrictions [Int]
+* `n`: Number of variables (dimensionality of x) [Int]
+
+### Returns
+* `ind`: Indicates 0 if found initial BFS and 1 if the original problem is unfeasible [Int]
+* `x`: Solution found (if ind = 0, this is the initial BFS to the original problem) [Float64 Vector n]
+""" ->
 function simplexPhase1(A::Array{Float64, 2}, b::Array{Float64, 1},
                         m::Int, n::Int)
-
-    # Auxiliary problem:
-    # MIN. sum(y_i)
-    # S.T. Ax + y = b
-    #      x, y >= 0
 
     println("SIMPLEX: Phase 1")
     println("========================================")
@@ -38,6 +55,29 @@ function simplexPhase1(A::Array{Float64, 2}, b::Array{Float64, 1},
     return ind, v[1:(n-m)]
 end
 
+@doc """
+*simplexPhase2!(A::Array{Float64, 2}, x::Array{Float64, 1}, b::Array{Float64, 1}, m::Int, n::Int)*
+
+Solves the problem:
+
+MINIMIZE     cx
+SUBJECT TO   Ax = b
+              x >= 0
+
+given an initial Basic Feasible Solution and all other parameters (including dimensionality).
+
+### Arguments
+* `A`: Restriction matrix [Float64 Array m × n]
+* `x`: Initial Basic Feasible Solution [Float64 Vector n] ***modified by the function***
+* `b`: Restriction vector [Float64 Vector m]
+* `c`: Cost vector [Float64 Vector n]
+* `m`: Number of restrictions [Int]
+* `n`: Number of variables (dimensionality of x) [Int]
+
+### Returns
+* `ind`: Indicates 0 if found initial BFS and 1 if the original problem is unfeasible [Int]
+* `d`: Last direction (if optimal solution is found) or the direction leading to cost -Inf [Float64 Vector n]
+""" ->
 function simplexPhase2!(A::Array{Float64, 2}, x::Array{Float64, 1}, b::Array{Float64, 1},
                         c::Array{Float64, 1}, m::Int, n::Int)
 
@@ -46,7 +86,7 @@ function simplexPhase2!(A::Array{Float64, 2}, x::Array{Float64, 1}, b::Array{Flo
 
     # Find non-basic indexes
     nbind  = find(x .== 0.0)
-    # Drop last indexes if we have more than n-m non-basic indexes
+    # Drop last indexes if we have more than (n-m) non-basic indexes
     length(nbind) > (n-m) && (nbind = nbind[1:n-m])
     # Find basic indexes
     bind::Array{Int64, 1} = filter(i -> !(i in nbind), eachindex(x))
@@ -72,7 +112,31 @@ function simplexPhase2!(A::Array{Float64, 2}, x::Array{Float64, 1}, b::Array{Flo
 
     return ind, d
 end
+@doc """
+*simplexStep!(A::Array{Float64, 2},
+             Binv::Array{Float64, 2},
+             n::Int,
+             c::Array{Float64, 1},
+             bind::Array{Int, 1},
+             nbind::Array{Int, 1},
+             x::Array{Float64, 1})*
 
+A single step of the simplex algorithm. Goes from a BFS to another BFS while minimizing the cost.
+Indicates if the BFS is already optimal.
+
+### Arguments
+* `A`: Restriction matrix [Float64 Array m × n]
+* `Binv`: Inverse of the basic matrix [Float64 Array m × n] ***modified by the function***
+* `n`: Number of variables (dimensionality of x) [Int]
+* `c`: Cost vector [Float64 Vector n]
+* `bind`: Basic Indexes [Int Vector m] ***modified by the function***
+* `nbind`: Non-Basic Indexes [Int Vector (n-m)] ***modified by the function***
+* `x`: Initial Basic Feasible Solution [Float64 Vector n] ***modified by the function***
+
+### Returns
+* `ind`:  1 if not finished (the BFS found isn't optimal), 0 if optimal solution was found, -1 if cost is -Inf [Int]
+* `d`: Last direction (if optimal solution is found) or the direction leading to cost -Inf [Float64 Vector n]
+""" ->
 function simplexStep!(A::Array{Float64, 2},
                       Binv::Array{Float64, 2},
                       n::Int,

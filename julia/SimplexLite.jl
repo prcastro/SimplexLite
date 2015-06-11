@@ -8,7 +8,13 @@ include("utils.jl")
 @doc """
 *simplex(A::Array{Float64, 2}, b::Array{Float64, 1}, c::Array{Float64, 1})*
 
-Simplex Algorithm given only the restrictions and the cost-vector
+Solves the problem:
+
+MINIMIZE     cx
+SUBJECT TO   Ax = b
+              x >= 0
+
+using the Simplex Algorithm, given only the restrictions and the cost-vector
 
 ### Arguments
 * `A`: Restriction matrix [Float64 Array m × n]
@@ -16,10 +22,9 @@ Simplex Algorithm given only the restrictions and the cost-vector
 * `c`: Cost vector [Float64 Vector n]
 
 ### Returns
-* `ind`: 1 if unfeasible, 0 if optimal solution was finded, -1 if cost is -Inf [Int]
+* `ind`: 1 if unfeasible, 0 if optimal solution was found, -1 if cost is -Inf [Int]
 * `x`: Optimal solution (if one was found) or the last basic feasible solution (if cost is -Inf) [Float64 Vector n]
 * `d`: Last direction (if optimal solution is found) or the direction leading to cost -Inf [Float64 Vector n]
-
 """ ->
 function simplex(A::Array{Float64, 2}, b::Array{Float64, 1}, c::Array{Float64, 1})
     m, n   = size(A)
@@ -38,24 +43,29 @@ end
 @doc """
 *simplex(A::Array{Float64, 2}, x::Array{Float64, 1}, b::Array{Float64, 1}, c::Array{Float64, 1})*
 
-Simplex Algorithm given the restrictions, the cost-vector and a initial basic feasible solution.
+Solves the problem:
+
+MINIMIZE     cx
+SUBJECT TO   Ax = b
+              x >= 0
+
+using the Simplex Algorithm, given the restrictions, the cost-vector and a initial basic feasible solution.
 
 ### Arguments
 * `A`: Restriction matrix [Float64 Array m × n]
-* `x`: Initial Basic Feasible Solution [Float64 Vector m] **modified inside function**
+* `x`: Initial Basic Feasible Solution [Float64 Vector m] ***modified by the function***
 * `b`: Restriction vector [Float64 Vector m]
 * `c`: Cost vector [Float64 Vector n]
 
 ### Returns
-* `ind`: 1 if unfeasible, 0 if optimal solution was finded, -1 if cost is -Inf [Int]
+* `ind`: 0 if optimal solution was found, -1 if cost is -Inf [Int]
 * `d`: Last direction (if optimal solution is found) or the direction leading to cost -Inf [Float64 Vector n]
-
 """ ->
 function simplex!(A::Array{Float64, 2}, x::Array{Float64, 1},
                   b::Array{Float64, 1}, c::Array{Float64, 1})
     m, n = size(A)
 
-    # Input check (aka "dumb user check")
+    # Input check
     @assert A*x == b "Solution isn't feasible"
 
     return simplexPhase2!(A, x, b, c, m, n)
@@ -70,25 +80,34 @@ end
           nbind::Array{Int, 1},
           v::Array{Float64, 1})*
 
-Core implementation of Simplex Algorithm given a BFS, the inverse of the basic matrix, the restrictions, the cost-vector, the dimensions
-and the basic indexes. This function won't print anything on screen.
+Solves the problem:
+
+MINIMIZE     cx
+SUBJECT TO   Ax = b
+            x >= 0
+
+using the Simplex Algorithm, ore implementation of Simplex Algorithm given a BFS, the inverse of the basic matrix, the restrictions, the cost-vector, the dimensions
+and the basic indexes. This function won't print anything on screen nor check its inputs.
 
 ### Arguments
 * `A`: Restriction matrix [Float64 Array m × n]
-* `Binv`: Inverse of the basic matrix (Float64 Array m × n)
+* `Binv`: Inverse of the basic matrix [Float64 Array m × n] ***modified by the function***
 * `m`: Number of restrictions [Int]
-* `x`: Initial Basic Feasible Solution [Float64 Vector n] **modified inside function**
-* `b`: Restriction vector [Float64 Vector m]
+* `n`: Number of variables (dimensionality of x) [Int]
 * `c`: Cost vector [Float64 Vector n]
+* `bind`: Basic indexes [Int Array m]
+* `nbind`: Non-basic indexes [Int Array (n-m)]
+* `x`: Initial Basic Feasible Solution [Float64 Vector n] ***modified by the function***
 
 ### Returns
-* `ind`: 1 if unfeasible, 0 if optimal solution was finded, -1 if cost is -Inf [Int]
+* `ind`: 0 if optimal solution was found, -1 if cost is -Inf [Int]
 * `d`: Last direction (if optimal solution is found) or the direction leading to cost -Inf [Float64 Vector n]
 """ ->
 function simplex!(A::Array{Float64, 2}, Binv::Array{Float64, 2},
                   m::Int, n::Int, c::Array{Float64, 1},
                   bind::Array{Int, 1}, nbind::Array{Int, 1},
-                  v::Array{Float64, 1})
+                  x::Array{Float64, 1})
+
     ind         = 1
     simplexstep = 0
     d = Array(Float64, n)
@@ -97,11 +116,11 @@ function simplex!(A::Array{Float64, 2}, Binv::Array{Float64, 2},
         println("Iteration ", simplexstep)
         println("----------------------------------------")
         println("Basic Feasible Solution (Basic Indexes):")
-        print_bind(bind, v)
-        println("\nValue of cost function: ", c⋅v)
+        print_bind(bind, x)
+        println("\nValue of cost function: ", c⋅x)
 
         # Simplex iteration
-        ind, d = simplexStep!(A, Binv, n, c, bind, nbind, v)
+        ind, d = simplexStep!(A, Binv, n, c, bind, nbind, x)
 
         # Next step
         simplexstep += 1
