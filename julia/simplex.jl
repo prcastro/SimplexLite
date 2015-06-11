@@ -68,7 +68,7 @@ given an initial Basic Feasible Solution and all other parameters (including dim
 
 ### Arguments
 * `A`: Restriction matrix [Float64 Array m × n]
-* `x`: Initial Basic Feasible Solution [Float64 Vector n] ***modified by the function***
+* `x`: Initial Basic Feasible Solution [Float64 Vector n] **modified by the function**
 * `b`: Restriction vector [Float64 Vector m]
 * `c`: Cost vector [Float64 Vector n]
 * `m`: Number of restrictions [Int]
@@ -126,12 +126,12 @@ Indicates if the BFS is already optimal.
 
 ### Arguments
 * `A`: Restriction matrix [Float64 Array m × n]
-* `Binv`: Inverse of the basic matrix [Float64 Array m × n] ***modified by the function***
+* `Binv`: Inverse of the basic matrix [Float64 Array m × n] **modified by the function**
 * `n`: Number of variables (dimensionality of x) [Int]
 * `c`: Cost vector [Float64 Vector n]
-* `bind`: Basic Indexes [Int Vector m] ***modified by the function***
-* `nbind`: Non-Basic Indexes [Int Vector (n-m)] ***modified by the function***
-* `x`: Initial Basic Feasible Solution [Float64 Vector n] ***modified by the function***
+* `bind`: Basic Indexes [Int Vector m] **modified by the function**
+* `nbind`: Non-Basic Indexes [Int Vector (n-m)] **modified by the function**
+* `x`: Initial Basic Feasible Solution [Float64 Vector n] **modified by the function**
 
 ### Returns
 * `ind`:  1 if not finished (the BFS found isn't optimal), 0 if optimal solution was found, -1 if cost is -Inf [Int]

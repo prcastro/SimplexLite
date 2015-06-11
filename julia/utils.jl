@@ -77,7 +77,7 @@ end
 Update the inverse of the basic matrix based on the basic direction and the index that leaves the basis.
 
 ### Arguments
-* `Binv`: Inverse of the basic matrix [Float64 Array m × n] ***modified by the function***
+* `Binv`: Inverse of the basic matrix [Float64 Array m × n] **modified by the function**
 * `u`: Minus the basic direction (only the m basic elements of d) [Float64 Vector m]
 * `out`: Index of the basis that leaves the basis [Int]
 """ ->

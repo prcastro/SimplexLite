@@ -53,7 +53,7 @@ using the Simplex Algorithm, given the restrictions, the cost-vector and a initi
 
 ### Arguments
 * `A`: Restriction matrix [Float64 Array m × n]
-* `x`: Initial Basic Feasible Solution [Float64 Vector m] ***modified by the function***
+* `x`: Initial Basic Feasible Solution [Float64 Vector m] **modified by the function**
 * `b`: Restriction vector [Float64 Vector m]
 * `c`: Cost vector [Float64 Vector n]
 
@@ -91,13 +91,13 @@ and the basic indexes. This function won't print anything on screen nor check it
 
 ### Arguments
 * `A`: Restriction matrix [Float64 Array m × n]
-* `Binv`: Inverse of the basic matrix [Float64 Array m × n] ***modified by the function***
+* `Binv`: Inverse of the basic matrix [Float64 Array m × n] **modified by the function**
 * `m`: Number of restrictions [Int]
 * `n`: Number of variables (dimensionality of x) [Int]
 * `c`: Cost vector [Float64 Vector n]
 * `bind`: Basic indexes [Int Array m]
 * `nbind`: Non-basic indexes [Int Array (n-m)]
-* `x`: Initial Basic Feasible Solution [Float64 Vector n] ***modified by the function***
+* `x`: Initial Basic Feasible Solution [Float64 Vector n] **modified by the function**
 
 ### Returns
 * `ind`: 0 if optimal solution was found, -1 if cost is -Inf [Int]
