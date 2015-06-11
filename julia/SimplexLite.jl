@@ -6,7 +6,7 @@ include("simplex.jl")
 include("utils.jl")
 
 @doc """
-*simplex(A::Array{Float64, 2}, b::Array{Float64, 1}, c::Array{Float64, 1})*
+*simplex(A::Matrix{Float64}, b::Vector{Float64}, c::Vector{Float64})*
 
 Solves the problem:
 
@@ -26,7 +26,7 @@ using the Simplex Algorithm, given only the restrictions and the cost-vector
 * `x`: Optimal solution (if one was found) or the last basic feasible solution (if cost is -Inf) [Float64 Vector n]
 * `d`: Last direction (if optimal solution is found) or the direction leading to cost -Inf [Float64 Vector n]
 """ ->
-function simplex(A::Array{Float64, 2}, b::Array{Float64, 1}, c::Array{Float64, 1})
+function simplex(A::Matrix{Float64}, b::Vector{Float64}, c::Vector{Float64})
     m, n   = size(A)
     ind, x = simplexPhase1(A, b, m, n)
 
@@ -38,7 +38,7 @@ function simplex(A::Array{Float64, 2}, b::Array{Float64, 1}, c::Array{Float64, 1
 end
 
 @doc """
-*simplex(A::Array{Float64, 2}, x::Array{Float64, 1}, b::Array{Float64, 1}, c::Array{Float64, 1})*
+*simplex(A::Matrix{Float64}, x::Vector{Float64}, b::Vector{Float64}, c::Vector{Float64})*
 
 Solves the problem:
 
@@ -58,21 +58,21 @@ using the Simplex Algorithm, given the restrictions, the cost-vector and a initi
 * `ind`: 0 if optimal solution was found, -1 if cost is -Inf [Int]
 * `d`: Last direction (if optimal solution is found) or the direction leading to cost -Inf [Float64 Vector n]
 """ ->
-function simplex!(A::Array{Float64, 2}, x::Array{Float64, 1},
-                  b::Array{Float64, 1}, c::Array{Float64, 1})
+function simplex!(A::Matrix{Float64}, x::Vector{Float64},
+                  b::Vector{Float64}, c::Vector{Float64})
     m, n = size(A)
     @assert A*x == b
     return simplexPhase2!(A, x, c, m, n)
 end
 
 @doc """
-*simplex!(A::Array{Float64, 2},
-          Binv::Array{Float64, 2},
+*simplex!(A::Matrix{Float64},
+          Binv::Matrix{Float64},
           n::Int,
-          c::Array{Float64, 1},
-          bind::Array{Int, 1},
-          nbind::Array{Int, 1},
-          v::Array{Float64, 1})*
+          c::Vector{Float64},
+          bind::Vector{Int},
+          nbind::Vector{Int},
+          v::Vector{Float64})*
 
 Solves the problem:
 
@@ -96,10 +96,10 @@ and the basic indexes. This function won't print anything on screen nor check it
 * `ind`: 0 if optimal solution was found, -1 if cost is -Inf [Int]
 * `d`: Last direction (if optimal solution is found) or the direction leading to cost -Inf [Float64 Vector n]
 """ ->
-function simplex!(A::Array{Float64, 2}, Binv::Array{Float64, 2},
-                  n::Int, c::Array{Float64, 1},
-                  bind::Array{Int, 1}, nbind::Array{Int, 1},
-                  x::Array{Float64, 1})
+function simplex!(A::Matrix{Float64}, Binv::Matrix{Float64},
+                  n::Int, c::Vector{Float64},
+                  bind::Vector{Int}, nbind::Vector{Int},
+                  x::Vector{Float64})
 
     d   = Array(Float64, n)
     ind = 1

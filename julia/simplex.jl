@@ -1,5 +1,5 @@
 @doc """
-*simplexPhase1(A::Array{Float64, 2}, b::Array{Float64, 1}, m::Int, n::Int)*
+*simplexPhase1(A::Matrix{Float64}, b::Vector{Float64}, m::Int, n::Int)*
 
 Solves the auxiliary problem:
 
@@ -20,7 +20,7 @@ is -Inf, the original problem is unfeasible. This is called Phase 1 of Simplex A
 * `ind`: Indicates 0 if found initial BFS and 1 if the original problem is unfeasible [Int]
 * `x`: Solution found (if ind = 0, this is the initial BFS to the original problem) [Float64 Vector n]
 """ ->
-function simplexPhase1(A::Array{Float64, 2}, b::Array{Float64, 1},
+function simplexPhase1(A::Matrix{Float64}, b::Vector{Float64},
                         m::Int, n::Int)
 
     # Initial BFS, x = 0, y = b
@@ -50,7 +50,7 @@ function simplexPhase1(A::Array{Float64, 2}, b::Array{Float64, 1},
 end
 
 @doc """
-*simplexPhase2!(A::Array{Float64, 2}, x::Array{Float64, 1}, b::Array{Float64, 1}, m::Int, n::Int)*
+*simplexPhase2!(A::Matrix{Float64}, x::Vector{Float64}, b::Vector{Float64}, m::Int, n::Int)*
 
 Solves the problem:
 
@@ -71,8 +71,8 @@ given an initial Basic Feasible Solution and all other parameters (including dim
 * `ind`: Indicates 0 if found initial BFS and 1 if the original problem is unfeasible [Int]
 * `d`: Last direction (if optimal solution is found) or the direction leading to cost -Inf [Float64 Vector n]
 """ ->
-function simplexPhase2!(A::Array{Float64, 2}, x::Array{Float64, 1},
-                        c::Array{Float64, 1}, m::Int, n::Int)
+function simplexPhase2!(A::Matrix{Float64}, x::Vector{Float64},
+                        c::Vector{Float64}, m::Int, n::Int)
 
     # Find non-basic indexes
     nbind  = findin(x, 0.0)
@@ -98,13 +98,13 @@ function simplexPhase2!(A::Array{Float64, 2}, x::Array{Float64, 1},
 end
 
 @doc """
-*simplexStep!(A::Array{Float64, 2},
-             Binv::Array{Float64, 2},
+*simplexStep!(A::Matrix{Float64},
+             Binv::Matrix{Float64},
              n::Int,
-             c::Array{Float64, 1},
-             bind::Array{Int, 1},
-             nbind::Array{Int, 1},
-             x::Array{Float64, 1})*
+             c::Vector{Float64},
+             bind::Vector{Int},
+             nbind::Vector{Int},
+             x::Vector{Float64})*
 
 A single step of the simplex algorithm. Goes from a BFS to another BFS while minimizing the cost.
 Indicates if the BFS is already optimal.
@@ -122,13 +122,13 @@ Indicates if the BFS is already optimal.
 * `ind`:  1 if not finished (the BFS found isn't optimal), 0 if optimal solution was found, -1 if cost is -Inf [Int]
 * `d`: Last direction (if optimal solution is found) or the direction leading to cost -Inf [Float64 Vector n]
 """ ->
-function simplexStep!(A::Array{Float64, 2},
-                      Binv::Array{Float64, 2},
+function simplexStep!(A::Matrix{Float64},
+                      Binv::Matrix{Float64},
                       n::Int,
-                      c::Array{Float64, 1},
-                      bind::Array{Int, 1},
-                      nbind::Array{Int, 1},
-                      x::Array{Float64, 1})
+                      c::Vector{Float64},
+                      bind::Vector{Int},
+                      nbind::Vector{Int},
+                      x::Vector{Float64})
 
     # Compute the reduced costs
     redc, nidx, j = reducedCosts(A, Binv, c, bind, nbind)

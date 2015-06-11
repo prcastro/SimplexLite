@@ -1,9 +1,9 @@
 @doc """
-*reducedCosts(A::Array{Float64, 2},
-              Binv::Array{Float64, 2},
-              c::Array{Float64, 1},
-              bind::Array{Int, 1},
-              nbind::Array{Int, 1})*
+*reducedCosts(A::Matrix{Float64},
+              Binv::Matrix{Float64},
+              c::Vector{Float64},
+              bind::Vector{Int},
+              nbind::Vector{Int})*
 
 Compute the reduced costs until find a negative one.
 
@@ -18,11 +18,11 @@ Compute the reduced costs until find a negative one.
 * `redc`: First negative reduced cost (0.0 if none) [Float64]
 * `i`: Index of the first negative reduced cost (0 if none) [Int]
 """ ->
-function reducedCosts(A::Array{Float64, 2},
-                      Binv::Array{Float64, 2},
-                      c::Array{Float64, 1},
-                      bind::Array{Int, 1},
-                      nbind::Array{Int, 1})
+function reducedCosts(A::Matrix{Float64},
+                      Binv::Matrix{Float64},
+                      c::Vector{Float64},
+                      bind::Vector{Int},
+                      nbind::Vector{Int})
 
     # Auxiliar vector
     p = vec(c[bind]'*Binv)
@@ -68,7 +68,7 @@ function theta(xB::Array{Float64,1}, dB::Array{Float64,1})
 end
 
 @doc """
-*updateBinv!(Binv::Array{Float64, 2}, u::Array{Float64, 1}, out::Int)*
+*updateBinv!(Binv::Matrix{Float64}, u::Vector{Float64}, out::Int)*
 
 Update the inverse of the basic matrix based on the basic direction and the index that leaves the basis.
 
@@ -77,7 +77,7 @@ Update the inverse of the basic matrix based on the basic direction and the inde
 * `u`: Minus the basic direction (only the m basic elements of d) [Float64 Vector m]
 * `out`: Index of the basis that leaves the basis [Int]
 """ ->
-function updateBinv!(Binv::Array{Float64, 2}, u::Array{Float64, 1}, out::Int)
+function updateBinv!(Binv::Matrix{Float64}, u::Vector{Float64}, out::Int)
     for i in eachindex(u)
         if i != out
             @inbounds Binv[i, :] += (-u[i]/u[out]) * Binv[out, :]
@@ -87,14 +87,14 @@ function updateBinv!(Binv::Array{Float64, 2}, u::Array{Float64, 1}, out::Int)
 end
 
 @doc "Print a vector and correspondent indexes" ->
-function print_vec(indexes, v::Array{Float64, 1})
+function print_vec(indexes, v::Vector{Float64})
     for i in eachindex(v)
         @inbounds println(indexes[i], " ", v[i])
     end
 end
 
 @doc "Print the basic elements of a vector" ->
-function print_bind(bind::Array{Int, 1}, x::Array{Float64, 1})
+function print_bind(bind::Vector{Int}, x::Vector{Float64})
     for i in eachindex(bind)
         @inbounds println(bind[i], " ", x[bind[i]])
     end
