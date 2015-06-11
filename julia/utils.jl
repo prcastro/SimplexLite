@@ -24,17 +24,13 @@ function reducedCosts(A::Array{Float64, 2},
                       bind::Array{Int, 1},
                       nbind::Array{Int, 1})
 
-    println("Reduced Costs:")
-
     # Auxiliar vector
-    p_T = vec(c[bind]'*Binv) # p is a transposed vector here
+    p = vec(c[bind]'*Binv)
 
     # Compute reduced costs until find the first negative one
     for i in nbind
       # Compute the reduced cost
-      redc = c[i] - p_T⋅A[:, i]
-      # Print the computed reduced cost
-      println(i, " ", redc)
+      @inbounds redc = c[i] - dot(p, A[:, i])
       # Return if negative
       all(redc .< 0) && return redc, i
     end
@@ -57,8 +53,8 @@ Computes the largest step we can do without leaving the polyhedra.
 * `imin`: Index correspondent to Θ (leaves the basis) [Int]
 """ ->
 function theta(xB::Array{Float64,1}, dB::Array{Float64,1})
-    Θ, imin = Float64(Inf), 0
-    for i in 1:length(xB)
+    Θ, imin = Inf, 0
+    for i in eachindex(xB)
          @inbounds if dB[i] < 0
             aux = - xB[i] / dB[i]
             if aux < Θ
@@ -84,10 +80,10 @@ Update the inverse of the basic matrix based on the basic direction and the inde
 function updateBinv!(Binv::Array{Float64, 2}, u::Array{Float64, 1}, out::Int)
     for i in eachindex(u)
         if i != out
-            Binv[i, :] += (-u[i]/u[out]) * Binv[out, :]
+            @inbounds Binv[i, :] += (-u[i]/u[out]) * Binv[out, :]
         end
     end
-    Binv[out,:] /= u[out]
+    @inbounds Binv[out,:] /= u[out]
 end
 
 @doc "Print a vector and correspondent indexes" ->

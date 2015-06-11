@@ -23,9 +23,6 @@ is -Inf, the original problem is unfeasible. This is called Phase 1 of Simplex A
 function simplexPhase1(A::Array{Float64, 2}, b::Array{Float64, 1},
                         m::Int, n::Int)
 
-    println("SIMPLEX: Phase 1")
-    println("========================================")
-
     # Initial BFS, x = 0, y = b
     v = vcat(zeros(n), b)
 
@@ -39,7 +36,7 @@ function simplexPhase1(A::Array{Float64, 2}, b::Array{Float64, 1},
     bind  = collect((n-m+1):n)
 
     # Compute the inverse of the first basic matrix
-    Binv = A[:, bind]^(-1)
+    Binv = inv(A[:, bind])
 
     # Find optimal BFS of the auxiliary problem using Simplex Algorithm
     ind, d = simplex!(A, Binv, m, n, c, bind, nbind, v)
@@ -47,10 +44,7 @@ function simplexPhase1(A::Array{Float64, 2}, b::Array{Float64, 1},
     # Here ind = 0, since the auxiliary problem is feasible
 
     # if y != 0 the original problem is not feasible
-    if v[(n-m+1):n] != zeros(m)
-        ind = 1
-        println("The original problem isn't feasible")
-    end
+    v[(n-m+1):n] != zeros(m) && (ind = 1)
 
     return ind, v[1:(n-m)]
 end
@@ -81,15 +75,19 @@ given an initial Basic Feasible Solution and all other parameters (including dim
 function simplexPhase2!(A::Array{Float64, 2}, x::Array{Float64, 1}, b::Array{Float64, 1},
                         c::Array{Float64, 1}, m::Int, n::Int)
 
-    println("\nSIMPLEX: Phase 2")
-    println("========================================\n")
-
     # Find non-basic indexes
-    nbind  = find(x .== 0.0)
+    nbind  = findin(x, 0.0)
+
     # Drop last indexes if we have more than (n-m) non-basic indexes
-    length(nbind) > (n-m) && (nbind = nbind[1:n-m])
+    length(nbind) > n-m && (nbind = nbind[1:n-m])
+
     # Find basic indexes
-    bind::Array{Int64, 1} = filter(i -> !(i in nbind), eachindex(x))
+    bind = Int[]
+    for i = eachindex(x)
+        if !(i in nbind)
+            push!(bind, i)
+        end
+    end
 
     # Compute the inverse of the basic matrix
     Binv = inv(A[:, bind])
@@ -97,21 +95,9 @@ function simplexPhase2!(A::Array{Float64, 2}, x::Array{Float64, 1}, b::Array{Flo
     # Find optimal BFS using Simplex Algorithm
     ind, d = simplex!(A, Binv, m, n, c, bind, nbind, x)
 
-    # Print corresponding solution/direction
-    println("\n========================================")
-    if ind == 0
-        println("Optimal BFS found with cost: ", c⋅x)
-        print_vec(1:n, x)
-    else
-        println("Direction associated with cost -Inf:")
-        print_vec(1:n, d)
-    end
-
-    # Sanity check
-    @assert A*x == b "Solution isn't feasible"
-
     return ind, d
 end
+
 @doc """
 *simplexStep!(A::Array{Float64, 2},
              Binv::Array{Float64, 2},
@@ -158,37 +144,24 @@ function simplexStep!(A::Array{Float64, 2},
     d[j]    = 1.0
 
     # If non-negative, this direction leads to cost = -Inf
-    if all(d .>= 0)
-        # We return x as the direction that leads to cost = -Inf
-        x[:] = d[:]
-        return -1, d
-    end
+    all(d .>= 0.0) && return -1, d
 
     # Index j is the one that enters the base
-    println("\nEnters the basis: ", j)
-
-    # Print the direction
-    println("\nDirection:")
-    print_bind(bind, d)
 
     # Compute Θ*
     Θ, idx = theta(x[bind], d[bind])
-    println("\nΘ*: ", Θ)
 
     # Convert bind index to R^n index
     # This index exits the base
     i = bind[idx]
-    println("\nLeaves the basis: ", i)
 
     # Compute new vector
     x[:] += Θ*d
 
     # Update basic, non-basic indexes and the inverse of the basic matrix
     updateBinv!(Binv, -d[bind], idx)
-    bind[find(bind .== i)]   = j
-    nbind[find(nbind .== j)] = i
-
-    println("\n----------------------------------------")
+    bind[findin(bind, i)]   = j
+    nbind[findin(nbind, j)] = i
 
     return 1, d
 end

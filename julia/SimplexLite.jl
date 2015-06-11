@@ -33,9 +33,6 @@ function simplex(A::Array{Float64, 2}, b::Array{Float64, 1}, c::Array{Float64, 1
     # Unfeasible problem
     ind == 1 && return ind, x, zeros(n)
 
-    # Sanity check
-    @assert A*x == b "Solution isn't feasible"
-
     ind, d = simplexPhase2!(A, x, b, c, m, n)
     return ind, x, d
 end
@@ -64,10 +61,6 @@ using the Simplex Algorithm, given the restrictions, the cost-vector and a initi
 function simplex!(A::Array{Float64, 2}, x::Array{Float64, 1},
                   b::Array{Float64, 1}, c::Array{Float64, 1})
     m, n = size(A)
-
-    # Input check
-    @assert A*x == b "Solution isn't feasible"
-
     return simplexPhase2!(A, x, b, c, m, n)
 end
 
@@ -108,22 +101,11 @@ function simplex!(A::Array{Float64, 2}, Binv::Array{Float64, 2},
                   bind::Array{Int, 1}, nbind::Array{Int, 1},
                   x::Array{Float64, 1})
 
-    ind         = 1
-    simplexstep = 0
-    d = Array(Float64, n)
+    d   = Array(Float64, n)
+    ind = 1
     while ind == 1
-        # Print iteration, basic variables and cost function
-        println("Iteration ", simplexstep)
-        println("----------------------------------------")
-        println("Basic Feasible Solution (Basic Indexes):")
-        print_bind(bind, x)
-        println("\nValue of cost function: ", c⋅x)
-
         # Simplex iteration
         ind, d = simplexStep!(A, Binv, n, c, bind, nbind, x)
-
-        # Next step
-        simplexstep += 1
     end
 
     return ind, d
