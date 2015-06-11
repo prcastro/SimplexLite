@@ -10,9 +10,9 @@ include("utils.jl")
 
 Solves the problem:
 
-MINIMIZE     cx
-SUBJECT TO   Ax = b
-              x >= 0
+MINIMIZE     cx\n
+SUBJECT TO   Ax = b\n
+             x >= 0
 
 using the Simplex Algorithm, given only the restrictions and the cost-vector
 
@@ -42,8 +42,8 @@ end
 
 Solves the problem:
 
-MINIMIZE     cx
-SUBJECT TO   Ax = b
+MINIMIZE     cx\n
+SUBJECT TO   Ax = b\n
               x >= 0
 
 using the Simplex Algorithm, given the restrictions, the cost-vector and a initial basic feasible solution.
@@ -66,19 +66,13 @@ function simplex!(A::Matrix{Float64}, x::Vector{Float64},
 end
 
 @doc """
-*simplex!(A::Matrix{Float64},
-          Binv::Matrix{Float64},
-          n::Int,
-          c::Vector{Float64},
-          bind::Vector{Int},
-          nbind::Vector{Int},
-          v::Vector{Float64})*
+*simplex!(A::Matrix{Float64},Binv::Matrix{Float64},n::Int,c::Vector{Float64},bind::Vector{Int},nbind::Vector{Int}, v::Vector{Float64})*
 
 Solves the problem:
 
-MINIMIZE     cx
-SUBJECT TO   Ax = b
-            x >= 0
+MINIMIZE     cx\n
+SUBJECT TO   Ax = b\n
+             x >= 0
 
 using the Simplex Algorithm, ore implementation of Simplex Algorithm given a BFS, the inverse of the basic matrix, the restrictions, the cost-vector, the dimensions
 and the basic indexes. This function won't print anything on screen nor check its inputs.

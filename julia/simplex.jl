@@ -3,9 +3,9 @@
 
 Solves the auxiliary problem:
 
-MINIMIZE    sum(y_i)
-SUBJECT TO  Ax + y  = b
-              x, y >= 0
+MINIMIZE    sum(y_i)\n
+SUBJECT TO  Ax + y  = b\n
+              x, y >= 0\n
 
 To find the initial Basic Feasible Solution. If the cost of the auxiliary problem
 is -Inf, the original problem is unfeasible. This is called Phase 1 of Simplex Algorithm.
@@ -54,9 +54,9 @@ end
 
 Solves the problem:
 
-MINIMIZE     cx
-SUBJECT TO   Ax = b
-              x >= 0
+MINIMIZE     cx\n
+SUBJECT TO   Ax = b\n
+              x >= 0\n
 
 given an initial Basic Feasible Solution and all other parameters (including dimensionality).
 
@@ -82,7 +82,7 @@ function simplexPhase2!(A::Matrix{Float64}, x::Vector{Float64},
 
     # Find basic indexes
     bind = Int[]
-    for i = eachindex(x)
+    for i in eachindex(x)
         if !(i in nbind)
             push!(bind, i)
         end
@@ -98,13 +98,7 @@ function simplexPhase2!(A::Matrix{Float64}, x::Vector{Float64},
 end
 
 @doc """
-*simplexStep!(A::Matrix{Float64},
-             Binv::Matrix{Float64},
-             n::Int,
-             c::Vector{Float64},
-             bind::Vector{Int},
-             nbind::Vector{Int},
-             x::Vector{Float64})*
+*simplexStep!(A::Matrix{Float64},Binv::Matrix{Float64},n::Int,c::Vector{Float64},bind::Vector{Int},nbind::Vector{Int},x::Vector{Float64})*
 
 A single step of the simplex algorithm. Goes from a BFS to another BFS while minimizing the cost.
 Indicates if the BFS is already optimal.
