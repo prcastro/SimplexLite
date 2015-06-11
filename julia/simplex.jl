@@ -138,8 +138,8 @@ function simplexStep!(A::Matrix{Float64},
 
     # If non-negative, this direction leads to cost = -Inf
     aux = 0
-    for i in eachindex(d)
-        if d[i] < 0
+    for i in d
+        if i < 0
             aux = 1
             break
         end

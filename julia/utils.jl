@@ -32,7 +32,7 @@ function reducedCosts(A::Matrix{Float64},
       # Compute the reduced cost
       @inbounds redc = c[i] - dot(p, A[:, i])
       # Return if negative
-      all(redc .< 0) && return redc, nidx, i
+      redc < 0.0 && return redc, nidx, i
     end
 
     # If no negative costs are found, return ind = 0 and redc = 0
