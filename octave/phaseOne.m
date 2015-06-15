@@ -29,7 +29,6 @@ function [ind x] = phaseOne(A, b, m, n)
     % if y != 0 the original problem is not feasible
     if any(roundn(v((n-m+1):n), 8) ~= zeros(m, 1))
         ind = 1;
-        printf("HERE")
     endif
 
     x = v(1:(n-m));
