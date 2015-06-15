@@ -5,4 +5,7 @@ A = [1.0 0.0 1.0];
 b = [3.0];
 c = [0.0; -1.0; 0.0];
 
-simplex!(A,b,c);
+ind, v, d = simplex(A, b, c)
+println("ind = ", ind)
+println("v = ", v)
+println("d = ", d)
