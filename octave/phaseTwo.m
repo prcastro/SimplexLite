@@ -18,7 +18,4 @@ function [ind x d] = phaseTwo(A, b, c, m, n, x)
     % Compute the inverse of the first basic matrix
     Binv = inv(A(:, bind));
     [ind x d] = revisedSimplexCore(A, Binv, m, n, c, bind, nbind, x);
-
-    %% Naive Simplex
-    % [ind, v, d] = naiveSimplexCore(A, m, n, c, bind, nbind, v);
 endfunction
