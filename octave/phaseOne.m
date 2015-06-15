@@ -27,7 +27,7 @@ function [ind x] = phaseOne(A, b, m, n)
     % Here ind = 0, since the auxiliary problem is feasible
 
     % if y != 0 the original problem is not feasible
-    if v((n-m+1):n) != zeros(m, 1)
+    if any(v((n-m+1):n) ~= zeros(m, 1))
         ind = 1;
     endif
 

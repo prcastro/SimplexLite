@@ -5,7 +5,7 @@ function [ind x d] = simplex(A, b, c, m, n)
 
     % Unfeasible problem
     if ind == 1
-        printf("\nThe original problem isn't feasible")
+        printf("\nThe problem isn't feasible\n\n")
         return
     endif
 
