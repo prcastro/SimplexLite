@@ -27,9 +27,16 @@ function [ind x] = phaseOne(A, b, m, n)
     % Here ind = 0, since the auxiliary problem is feasible
 
     % if y != 0 the original problem is not feasible
-    if any(v((n-m+1):n) ~= zeros(m, 1))
+    if any(roundn(v((n-m+1):n), 8) ~= zeros(m, 1))
         ind = 1;
+        printf("HERE")
     endif
 
     x = v(1:(n-m));
+endfunction
+
+% Round v to n-th decimal place
+function v = roundn(v, n)
+    factor = 10^n;
+    v = round(v*factor)/factor;
 endfunction
