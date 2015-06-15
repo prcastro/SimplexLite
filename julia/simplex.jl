@@ -43,8 +43,9 @@ function simplexPhase1(A::Matrix{Float64}, b::Vector{Float64},
 
     # Here ind = 0, since the auxiliary problem is feasible
 
-    # if y != 0 the original problem is not feasible
-    v[(n-m+1):n] != zeros(m) && (ind = 1)
+    # If y != 0 the original problem is not feasible
+    # Round v to avoid numerical imprecisions
+    round(v[(n-m+1):n], 8) != zeros(m) && (ind = 1)
 
     return ind, v[1:(n-m)]
 end
