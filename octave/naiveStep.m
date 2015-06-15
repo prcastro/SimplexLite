@@ -1,10 +1,10 @@
-function [v d ind i j] = naiveStep(A, m, n, c, bind, nbind, v)
+function [x d ind i j] = naiveStep(A, m, n, c, bind, nbind, x)
     % Compute B and its LU decomposition
     B = A(:, bind);
-    [L, U] = lu(B);
+    [L U] = lu(B);
 
     % Compute the reduced costs
-    [redc, j] = naiveReducedCost(A, c, bind, nbind, L, U);
+    [redc j] = naiveReducedCost(A, c, bind, nbind, L, U);
 
     % When j = 0, reduced costs are all non-negative
     % and we found an optimal solution
@@ -36,7 +36,7 @@ function [v d ind i j] = naiveStep(A, m, n, c, bind, nbind, v)
     print_bind(bind, d);
 
     % Compute Theta*
-    [theta, idx] = thetaStep(v(bind), d(bind), length(bind));
+    [theta idx] = thetaStep(x(bind), d(bind), length(bind));
     printf("\nTheta*\n%f\n", theta);
 
     % Convert bind index to R^n index
@@ -45,6 +45,6 @@ function [v d ind i j] = naiveStep(A, m, n, c, bind, nbind, v)
     printf("\nSai da base: %d\n", i);
 
     % Compute new vector
-    v += theta*d;
+    x += theta*d;
     ind = 1;
 endfunction

@@ -1,6 +1,6 @@
-function [v d ind i j] = revisedStep(A, Binv, m, n, c, bind, nbind, v)
+function [x d ind i j] = revisedStep(A, Binv, m, n, c, bind, nbind, x)
     % Compute the reduced costs
-    [redc, j] = revisedReducedCost(A, Binv, c, bind, nbind);
+    [redc j] = revisedReducedCost(A, Binv, c, bind, nbind);
 
     % When j = 0, reduced costs are all non-negative
     % and we found an optimal solution
@@ -32,7 +32,7 @@ function [v d ind i j] = revisedStep(A, Binv, m, n, c, bind, nbind, v)
     print_bind(bind, d);
 
     % Compute Theta*
-    [theta, idx] = thetaStep(v(bind), d(bind), length(bind));
+    [theta idx] = thetaStep(x(bind), d(bind), length(bind));
 
     % Convert bind index to R^n index
     % This index exits the base
@@ -40,6 +40,6 @@ function [v d ind i j] = revisedStep(A, Binv, m, n, c, bind, nbind, v)
     printf("\nLeaves the basis: %d\n", i);
 
     % Compute new vector
-    v += theta*d;
+    x += theta*d;
     ind = 1;
 endfunction

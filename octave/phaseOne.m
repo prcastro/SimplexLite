@@ -22,7 +22,7 @@ function [ind x] = phaseOne(A, b, m, n)
     %% Revised Simplex
     % Compute the inverse of the first basic matrix
     Binv = inv(A(:, bind));
-    [ind, v, d] = revisedSimplexCore(A, Binv, m, n, c, bind, nbind, v);
+    [ind v d] = revisedSimplexCore(A, Binv, m, n, c, bind, nbind, v);
 
     %% Naive Simplex
     % [ind, v, d] = naiveSimplexCore(A, m, n, c, bind, nbind, v);
